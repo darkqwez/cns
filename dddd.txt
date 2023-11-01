@@ -1,0 +1,266 @@
+initial key is used to create many different round keys which will be used in the corresponding round of the encryption
+
+
+AES considers each block as a 16 byte (4 byte x 4 byte = 128 ) grid in a column major arrangement.
+
+Each round has
+SubBytes  Substitution (S-box)
+ShiftRows
+MixColumns
+Add Round Key 	XORed 
+
+
+Add round key
+Inverse MixColumns
+ShiftRows
+Inverse SubByte
+
+-=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=--=-=-=-=-=-=-=-
+
+
+Recocnissance tools
+
+WDTNND 
+Whois dig traceroute nikto nslookup  dmitry
+-=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=-
+
+HASHDEEP
+hashdeep
+-c method
+-r filedirectorypath
+filename  --> hashes it
+*.txt
+-p 100    //Parellel block
+
+*.txt>hashset.txt
+
+MATCHING MODE
+hashdeep -m -k hashset.txt *
+-s //supress
+-x //negatively matching
+
+audit
+hashset 
+hashdeep -c md5,sha1,sha256 -r /home/shachi/myfiles>hashset1.txt
+hashdeep -a -r -k hashset1.txt /home/shachi/myfiles
+
+use -v while  auditing to get details 
+
+
+
+To check the version of Hashdeep - hashdeep -V
+2. To display help about hashdeep - hashdeep -h or hashdeep -hh
+3. To display the manual page of hashdeep- man hashdeep
+4. To display the manual page of any specific hash algorithm supported 
+by hashdeep- man md5deep
+By default, hashdeep generates MD5 n SHA256 hash values.
+5. To hash a file - hashdeep filename
+6. If you don’t want to display the full path of file in output hash 
+record- hashdeep -b filename
+7. To supress any error messages- hashdeep -s filename
+8. To apply multiple hash algorithms than defaulthashdeep -c md5,sha1,sha256,tiger filename
+9. To hash multiple files (say all text files) using md5
+hashdeep -c md5 *.txt
+10. To hash multiple files (say all text files) using md5 and sha1
+hashdeep -c md5,sha1 *.txt 
+11. Hashing block of files- hashdeep -c md5 -p 100 example.txt
+12. To recursively calculate hash (all files and subdirectories in a 
+specified directory)
+hashdeep c md5 -r /home/shachi/myfiles
+13. To redirect the output of md5 hash of files to another file
+md5deep *.txt>hashset.txt
+hashdeep *.txt>hashtext1.txt
+Check the content of output filecat hashset.txt
+cat hashset1.txt
+14. To display output in matching mode
+md5deep -m hashset.txt *
+hashdeep -m -k hashset1.txt *
+15. To supress unwanted system msgs/error
+md5deep -m hashset.txt *
+hashdeep -s -m hashset1.txt *
+No output is displayed if there is no matching hashed file is found.
+16. To display all files which are negatively matching use -x option
+Md5deep -s -x hashset.txt *
+hashdeep -s -x hashset1.txt *
+
+Forensic auditing can be done using hashdeep tool which means a 
+check to determine if any files in the system are changed due to malware 
+or any normal system operation like update patching.
+17. To audit, first create a hashset file and then audit it against the files
+to be checked if they are modified.
+hashdeep -c md5,sha1,sha256 -r /home/shachi/myfiles>hashset1.txt
+hashdeep -a -r -k hashset1.txt /home/shachi/myfiles
+18. Add new file to the directory and audit. It fails.
+touch /home/shachi/myfiles/newfile.txt
+hashdeep -a -r -k hashset1.txt /home/shachi/myfiles
+19. To get where it failed use the command with -v option
+hashdeep -v -a -r -k hashset1.txt /home/shachi/myfiles
+20. Move one of the files to another directory and audit n see output
+mv /home/shachi/myfiles/example.txt /tmp
+hashdeep -v -a -r -k hashset1.txt /home/shachi/myfiles
+21. Rename one of the files and audit n see the output
+mv /home/shachi/myfiles/shachi.txt /home/shachi/myfiles/shachi.bak
+hashdeep -v -a -r -k hashset1.txt /home/shachi/myfiles
+22. For verbose output of audit
+hashdeep -vv -a -r -k hashset1.txt /home/shachi/myfiles
+hashdeep -vvv -a -r -k hashset1.txt /home/shachi/myfile
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+
+
+TCPDUMP
+
+-i eth0  //specific interface
+port 80
+protocol_name
+host IP_Address
+src IP_Address (from)
+dst IP_Address
+
+combinations
+udp port 53
+src IP_ADD and port 22
+
+
+greater 100  // 100bytes>
+-c 10   //No of packets
+
+
+ Capture Packets Using Hexadecimal Filter:
+sudo tcpdump -X 'tcp[13] & 2 != 0'
+This captures only SYN packets (TCP packets with the SYN flag set).
+
+-w output.pcap //output in file
+-=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=--=-=---=-
+
+NMAP
+--help ....workssss 
+Theory - nmap.org or Niranjan merged pdf
+
+nmap
+-sT   TCP Connect Scan
+-sS	SYN
+-sF	FIN
+-sN	Null
+-sX	Xmas
+-sA	ACK
+-sn	Ping Sweep
+-sV	Service & Version Detection
+-p	Port & p range scanning
+-O	OS Detection
+
+Theory -Whatsapp photos
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+DOS Attack using Hping3 (refer to niranjans pdf**************************)
+
+Common types- SYN Flood, ICMP flood, SMURF attack
+
+SYN - Targets 3 way handshake in TCP(syn - synack - ack)
+Huge number of syn send but woht send ack - server waitsss
+
+ICMP - also known as ping flood
+High volume of ICMP echo request(ping requests) 
+Network congestion and denial or service degradation
+
+
+A SMURF attack is a network-based DoS attack that takes advantage of ICMP and
+IP addressing.
+In a SMURF attack, the attacker sends a large number of ICMP echo request (ping)
+packets to an IP broadcast address, typically spoofing the source IP address to
+make it appear as if the requests are coming from the victim's IP address.
+When these requests are sent to the broadcast address, all devices on the target
+network respond with ICMP echo replies.
+
+
+Write the Hping3 commands used for performing SYN flood and
+ICMP flood.
+Syn flood :
+hping3 -c 15000 -d 120 -S -w 64 -p 80 --flood --rand-source 192.168.1.159
+ICMP flood:
+hping3 -1 --flood -a 192.168.103 192.168.1.255
+
+-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=--=-=-=-=--=-=-=-=-
+Three basic types of network firewalls: packet filtering (stateless), stateful,
+and application layer
+(refer Niranjannnsss pdf*********************************************************)
+Scenarious - INPUT OUTPUT FORWARD
+Actions - ACCEPT DROP REJECT
+
+sudo iptables -L
+
+sudo iptables -A INPUT -p tcp --dport ssh -j ACCEPT
+
+sudo iptables -A INPUT -p tcp --dport 80 -j ACCEPT
+
+sudo iptables -A INPUT -j DROP
+sudo iptables -L
+
+sudo iptables -I INPUT 1 -i lo -j ACCEPT
+sudo iptables -L
+
+
+sudo iptables -L -v
+
+sudo iptables -A INPUT -p icmp -j ACCEPT
+
+sudo iptables -F
+
+ping ip_bajjuwala
+
+sudo iptables -A INPUT -p icmp -j DROP
+
+sudo iptables -L
+
+ping again
+
+Now try to restrict outgoing icmp packets by adding rule
+sudo iptables -A OUTPUT -p icmp -j DROP
+List the rule:
+sudo iptables -L
+now try to ping neighbour
+ping 192.168.92.17
+
+
+Blocking TCP port traffic will not allow u to browse the Internet
+sudo iptables -A INPUT -p tcp -j DROP
+
+Blocking ICMP packets from specific source machine:
+sudo iptables -A INPUT -s 192.168.92.17 -p icmp -j DROP
+sudo iptables -L
+ping 192.168.92.17
+---does not allow (192.168.92.17 can not send u icmp packets)
+ping any other machine:
+ping 192.168.92.11 
+---allowed (192.168.92.11 can send u icmp packets)
+
+
+-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=-=-=--=-=-=
+
+
+GPG
+
+gpg --gen-key or gpg –full-generate-key 
+
+gpg --export -a username>filename
+
+gpg --export-secret-key -a username>filename
+
+gpg --fingerprint receiver’s_email
+
+gpg --import filename_containing_public_key_of_receiver
+
+gpg --list-keys
+
+gpg --list-keys shachi_natu@yahoo.com
+
+gpg --sign-key receiver_email
+
+gpg --encrypt -r receiver_email name_of_file
+
+gpg -o myfiledecrypted -d myfile.txt.gpg
+
+./././
+gpg --delete-secret-key email@example.com
+gpg --delete-key email@example.com
+
